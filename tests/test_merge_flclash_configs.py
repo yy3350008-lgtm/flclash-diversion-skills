@@ -1,6 +1,7 @@
 """Tests for merge_flclash_configs.py — run with: pytest"""
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -9,6 +10,30 @@ import pytest
 
 SCRIPT = Path(__file__).resolve().parent.parent / "scripts" / "merge_flclash_configs.py"
 EXAMPLES = Path(__file__).resolve().parent.parent / "examples"
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# Forbidden credential keys that must never appear in example YAML files.
+# Use negative lookbehind to avoid false positives (e.g. "port:" must not
+# match "mixed-port:").  [\w-] covers word chars and hyphens.
+FORBIDDEN_KEY_PATTERNS_EXAMPLES = [
+    re.compile(r"(?<![\w-])server:"),
+    re.compile(r"(?<![\w-])port:"),
+    re.compile(r"(?<![\w-])uuid:"),
+    re.compile(r"(?<![\w-])password:"),
+    re.compile(r"token="),
+]
+
+# Patterns that must never appear in any committed file.
+FORBIDDEN_PATH_PATTERNS = [
+    re.compile(r"AppData"),
+    re.compile(r"Users[/\\]"),
+    re.compile(r"%APPDATA%"),
+]
+
+# Forbidden credential patterns for output / source files.
+FORBIDDEN_CREDENTIAL_PATTERNS = [
+    re.compile(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"),  # IPv4
+]
 
 
 def run_merge(tmp_path: Path, *extra_args: str, base: str = "generic-main.yaml",
@@ -153,8 +178,53 @@ class TestPrivacy:
         """Output should not contain IPs from AppData paths or real user dirs."""
         run_merge(tmp_path)
         content = (tmp_path / "output.yaml").read_text(encoding="utf-8")
-        # These are placeholder IPs from examples; real user IPs should not appear
-        # unless the user put them in their own configs (which they shouldn't commit).
-        assert "AppData" not in content
-        assert "Users\\" not in content
-        assert "Users/" not in content
+        for pat in FORBIDDEN_PATH_PATTERNS:
+            assert not pat.search(content), f"Forbidden path pattern in output: {pat.pattern}"
+
+    def test_no_credential_keys_in_output(self, tmp_path: Path) -> None:
+        """Output should not contain server/port/uuid/password/token keys."""
+        run_merge(tmp_path)
+        content = (tmp_path / "output.yaml").read_text(encoding="utf-8")
+        for pat in FORBIDDEN_KEY_PATTERNS_EXAMPLES:
+            assert not pat.search(content), f"Forbidden credential key in output: {pat.pattern}"
+
+    def test_no_ipv4_in_output(self, tmp_path: Path) -> None:
+        """Output should not contain any IPv4 addresses."""
+        run_merge(tmp_path)
+        content = (tmp_path / "output.yaml").read_text(encoding="utf-8")
+        for pat in FORBIDDEN_CREDENTIAL_PATTERNS:
+            assert not pat.search(content), f"Forbidden IPv4 in output: {pat.pattern}"
+
+
+class TestExampleFilesPrivacy:
+    """Ensure example YAML files contain no real credentials."""
+
+    @pytest.mark.parametrize("filename", [
+        "generic-main.yaml",
+        "generic-secondary.yaml",
+    ])
+    def test_no_forbidden_keys_in_examples(self, filename: str) -> None:
+        """Example files must not contain server:, port:, uuid:, password:, or token=."""
+        content = (EXAMPLES / filename).read_text(encoding="utf-8")
+        for pat in FORBIDDEN_KEY_PATTERNS_EXAMPLES:
+            assert not pat.search(content), f"Forbidden key '{pat.pattern}' found in {filename}"
+
+    @pytest.mark.parametrize("filename", [
+        "generic-main.yaml",
+        "generic-secondary.yaml",
+    ])
+    def test_no_ipv4_in_examples(self, filename: str) -> None:
+        """Example files must not contain any IPv4 addresses."""
+        content = (EXAMPLES / filename).read_text(encoding="utf-8")
+        for pat in FORBIDDEN_CREDENTIAL_PATTERNS:
+            assert not pat.search(content), f"Forbidden IPv4 in {filename}: {pat.pattern}"
+
+    @pytest.mark.parametrize("filename", [
+        "generic-main.yaml",
+        "generic-secondary.yaml",
+    ])
+    def test_no_forbidden_paths_in_examples(self, filename: str) -> None:
+        """Example files must not contain user-specific paths."""
+        content = (EXAMPLES / filename).read_text(encoding="utf-8")
+        for pat in FORBIDDEN_PATH_PATTERNS:
+            assert not pat.search(content), f"Forbidden path pattern in {filename}: {pat.pattern}"

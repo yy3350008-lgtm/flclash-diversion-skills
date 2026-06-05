@@ -5,27 +5,11 @@ log-level: info
 
 proxies:
   - name: Proxy-A
-    type: vmess
-    server: 203.0.113.10
-    port: 443
-    uuid: 00000000-0000-0000-0000-000000000001
-    alterId: 0
-    cipher: auto
-    tls: true
+    type: direct
   - name: Proxy-B
-    type: vmess
-    server: 198.51.100.20
-    port: 443
-    uuid: 00000000-0000-0000-0000-000000000002
-    alterId: 0
-    cipher: auto
-    tls: true
+    type: direct
   - name: Proxy-C
-    type: vless
-    server: 192.0.2.30
-    port: 443
-    uuid: 00000000-0000-0000-0000-000000000003
-    tls: true
+    type: direct
 
 proxy-groups:
   - name: Main

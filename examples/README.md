@@ -5,11 +5,11 @@ This directory contains generic example configs for testing and demonstration.
 ## Files
 
 - `generic-main.yaml` — A minimal base config with three proxies (Proxy-A/B/C),
-  a `Main` select group, and basic rules. Uses placeholder IPs from RFC 5737
-  documentation ranges and dummy UUIDs.
+  a `Main` select group, and basic rules. Proxies use `type: direct` stubs with
+  no server, port, or credentials.
 - `generic-secondary.yaml` — A secondary config with three proxies
-  (Secondary-Alpha/Beta/Gamma) and no groups or rules. The merge script creates
-  groups automatically.
+  (Secondary-Alpha/Beta/Gamma) and no groups or rules. Proxies use `type: direct`
+  stubs. The merge script creates groups automatically.
 
 ## Usage
 
@@ -27,11 +27,9 @@ python scripts/merge_flclash_configs.py \
 
 ## Privacy
 
-All IPs, UUIDs, and passwords in these files are placeholders:
-
-- IPs use RFC 5737 documentation ranges (`203.0.113.x`, `198.51.100.x`, `192.0.2.x`)
-- UUIDs are all-zeros with a trailing digit
-- Passwords are `changeme`
+All proxy entries in these example files use `type: direct` stubs with **no
+server, port, uuid, password, or token fields**. They are structural examples
+only — not usable proxy configurations.
 
 **Never commit real credentials.** Use `.gitignore` patterns like `*.local.yaml`
 and `*.secret.yaml` for your actual configs.
