@@ -1,5 +1,7 @@
 # FlClash Diversion Skills
 
+English | [简体中文](README.zh-CN.md)
+
 A privacy-safe CLI utility and Codex/Claude skill for merging FlClash/Mihomo
 proxy profiles into one configuration with precise domain-specific diversion.
 
@@ -27,16 +29,16 @@ select both profiles. This tool merges two profiles into a single output config:
   is deleted if validation fails.
 - **No credential exposure** — the script prints only group names, domain names,
   and proxy counts. No IPs, UUIDs, tokens, or passwords are printed.
-- **Privacy-safe examples** — all example configs use RFC 5737 documentation IPs
-  and dummy credentials.
+- **Privacy-safe examples** — all example configs use `type: direct` proxy stubs
+  with no endpoint or credential fields.
 
 ## Safety & Privacy
 
 This project is designed to be safe to publish:
 
 - **No hardcoded paths, IPs, UUIDs, tokens, or passwords** in any script or config.
-- **No user-specific file paths** (no AppData, no usernames).
-- **Examples use placeholder values** from RFC 5737 documentation address ranges.
+- **No user-specific file paths** — no local machine paths or usernames.
+- **Examples use `type: direct` proxy stubs** with no endpoint or credential fields.
 - **Output summary never prints config contents or credentials.**
 - The `.gitignore` blocks `output.yaml`, `*.local.yaml`, `*.secret.yaml`, and
   `.env` to prevent accidental credential commits.
@@ -131,7 +133,7 @@ Tests cover:
 - `--target-group-type url-test` flag.
 - Broad domain blocking and `--allow-broad-domain` override.
 - Domain normalization (leading dots, whitespace).
-- Privacy checks (no AppData paths or user directories in output).
+- Privacy checks (no local paths or user directories in output).
 
 ## Limitations
 
