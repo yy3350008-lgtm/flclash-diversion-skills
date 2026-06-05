@@ -2,8 +2,28 @@
 
 English | [简体中文](README.zh-CN.md)
 
-A privacy-safe CLI utility and Codex/Claude skill for merging FlClash/Mihomo
-proxy profiles into one configuration with precise domain-specific diversion.
+> Merging FlClash and Mihomo (Clash Meta) proxy profiles into one configuration
+> with precise domain routing and split tunneling — safe for multiple subscriptions.
+
+## Use Cases
+
+- **One subscription for daily use, another for a specific site.** Keep your main
+  subscription for general traffic while routing a single website through a different
+  provider's nodes.
+- **Preferred main node with targeted diversion.** Route NotebookLM, Gemini, ChatGPT,
+  or any other domain through verified nodes without affecting the rest of your traffic.
+- **Combine multiple subscriptions into one FlClash-compatible local profile.** Merge
+  two or more subscription configs into a single file that FlClash can load directly.
+- **Avoid broad Google-domain rules that accidentally reroute unrelated services.**
+  The tool blocks wide rules like `google.com` by default so only confirmed target
+  domains are diverted.
+
+## What You Get
+
+| Before | After |
+|---|---|
+| Only one active FlClash profile at a time. | One merged profile containing a main group, a secondary group, and a target diversion group. |
+| Switching subscriptions means losing one set of nodes. | All nodes from both subscriptions coexist in a single config with precise domain-level routing. |
 
 ## Why?
 
@@ -142,6 +162,15 @@ Tests cover:
 - The script does not modify input files; it always writes a new output file.
 - Broad domain blocking only checks the three most common Google domains.
 
+## Who Is This For?
+
+- **Students and researchers** who need region-sensitive services like NotebookLM or
+  Gemini accessible through a reliable proxy node.
+- **Developers** managing multiple proxy subscriptions for different projects or
+  environments.
+- **Users with region-sensitive web services** who want fine-grained control over
+  which domains route through which nodes.
+
 ## Contributing
 
 1. Fork the repository.
@@ -152,6 +181,12 @@ Tests cover:
 
 Please ensure no real credentials, IPs, or user-specific paths are included in
 any commits.
+
+## Keywords
+
+This project covers FlClash split tunneling, Mihomo rules and routing, Clash Meta
+profile merging, multi-subscription proxy management, domain-based proxy routing,
+and NotebookLM proxy routing through policy groups.
 
 ## License
 
