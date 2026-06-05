@@ -1,0 +1,24 @@
+proxies:
+  - name: Secondary-Alpha
+    type: vmess
+    server: 203.0.113.50
+    port: 443
+    uuid: 00000000-0000-0000-0000-000000000010
+    alterId: 0
+    cipher: auto
+    tls: true
+  - name: Secondary-Beta
+    type: vless
+    server: 198.51.100.60
+    port: 443
+    uuid: 00000000-0000-0000-0000-000000000011
+    tls: true
+  - name: Secondary-Gamma
+    type: trojan
+    server: 192.0.2.70
+    port: 443
+    password: changeme
+
+proxy-groups: []
+
+rules: []

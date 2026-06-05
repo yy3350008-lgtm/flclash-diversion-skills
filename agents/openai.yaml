@@ -1,0 +1,4 @@
+interface:
+  display_name: "FlClash Diversion Skills"
+  short_description: "Merge FlClash profiles with precise domain routing"
+  default_prompt: "Use $flclash-diversion-skills to combine profiles and create a safe domain-specific diversion group."
